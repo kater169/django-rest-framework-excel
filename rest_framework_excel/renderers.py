@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from six import StringIO, text_type
 from uuid import UUID
 
@@ -44,7 +44,7 @@ class ExcelRenderer(BaseRenderer):
                 if isinstance(elem, text_type) and PY2:
                     ws.cell(column=col_idx, row=row_idx, value=elem.encode('utf-8'))
                 elif isinstance(elem, UUID):
-                    ws.cell(column=col_idx, row=row_idx, value=unicode(elem))
+                    ws.cell(column=col_idx, row=row_idx, value=str(elem))
                 else:
                     ws.cell(column=col_idx, row=row_idx, value=elem)
 
@@ -67,7 +67,7 @@ class ExcelRenderer(BaseRenderer):
             # Get the set of all unique headers, and sort them.
             headers = []
             if data[0]:
-                headers = data[0].keys()
+                headers = list(data[0].keys())
 
             # Create a row for each dictionary, filling in columns for which the
             # item has no data with None values.
@@ -119,7 +119,7 @@ class ExcelRenderer(BaseRenderer):
          'votes.1' | 'user'         | 'user.votes.1'
         """
         nested_item = {}
-        for header, val in flat_item.items():
+        for header, val in list(flat_item.items()):
             nested_header = self.level_sep.join([prefix, header]) if header else prefix
             nested_item[nested_header] = val
         return nested_item
@@ -135,7 +135,7 @@ class ExcelRenderer(BaseRenderer):
 
     def flatten_dict(self, d):
         flat_dict = OrderedDict()
-        for key, item in d.iteritems():
+        for key, item in d.items():
             key = str(key)
             flat_item = self.flatten_item(item)
             nested_item = self.nest_flat_item(flat_item, key)
