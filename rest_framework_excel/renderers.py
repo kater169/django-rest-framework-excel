@@ -1,8 +1,12 @@
 
-from six import StringIO, text_type
+from six import BytesIO, text_type
 from uuid import UUID
 
-from ordereddict import OrderedDict
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+
 from openpyxl import Workbook
 
 from rest_framework.renderers import BaseRenderer
@@ -32,7 +36,7 @@ class ExcelRenderer(BaseRenderer):
         if data is None:
             return ''
 
-        stream = StringIO()
+        stream = BytesIO()
 
         wb = Workbook()
         ws = wb.active
